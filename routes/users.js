@@ -1,4 +1,5 @@
 const express = require('express')
+const db = require('../database')
 const router = express.Router()
 
 router.get('/', (req, res) => {
@@ -14,15 +15,28 @@ router.get('/new', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    const isValid = true
-    if(isValid) {
-        users.push({ name: req.body.firstName })
-        res.redirect(`users/${users.length - 1}`)
-    } else {
-        console.log("error")
-        res.render('users/new', { firstName: req.body.firstName })
+    const { username, password } = req.body
+
+    if(username && password) {
+        console.log(username, password)
+        try {
+            db.promise().query(`INSERT INTO USERS VALUES('${username}', '${password}')`)
+            res.status(201).send({ message: 'User created' })
+        } catch (error) {
+            console.log(error)
+        }
     }
 })
+// router.post('/', (req, res) => {
+//     const isValid = true
+//     if(isValid) {
+//         users.push({ name: req.body.firstName })
+//         res.redirect(`users/${users.length - 1}`)
+//     } else {
+//         console.log("error")
+//         res.render('users/new', { firstName: req.body.firstName })
+//     }
+// })
 
 router.route('/:id')
     .get((req, res) => {
