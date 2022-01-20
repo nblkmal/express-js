@@ -6,6 +6,12 @@ router.get('/', (req, res) => {
     res.send("Users List")
 })
 
+router.get('/index', async (req, res) => {
+    const data = await db.promise().query(`SELECT * FROM USERS`)
+    console.log(data[0])
+    res.render('user/index', { data: data[0] })
+})
+
 router.get('/create', (req, res) => {
     res.render('user/create')
 })
